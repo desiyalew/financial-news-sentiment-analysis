@@ -88,9 +88,9 @@ def plot_wordcloud(df, text_column='headline'):
     plt.show()
 
 def filter_by_recent_days(df, date_column='date', days=30):
-    df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
-    recent_date_threshold = pd.Timestamp.today() - pd.Timedelta(days=days)
-    filtered_df = df[df[date_column] >= recent_date_threshold]
+    df[date_column] = pd.to_datetime(df[date_column], errors='coerce').dt.tz_localize(None)
+    recent_date_threshold = pd.Timestamp.today()  # remains tz-naive
+    filtered_df = df[df[date_column] >= recent_date_threshold - pd.Timedelta(days=days)]
     print(f"\nFiltered data to last {days} days: {len(filtered_df)} rows")
     return filtered_df
 
@@ -106,7 +106,7 @@ def run_full_eda(df):
     analyze_headline_length(df)
     articles_per_publisher(df)
     analyze_publication_dates(df)
-    perform_topic_modeling(df)
+    # perform_topic_modeling(df)
     plot_publication_frequency(df)
     analyze_publishing_times(df)
     analyze_publishers(df)
